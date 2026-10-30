@@ -7,7 +7,10 @@ import authRoutes from "./routes/auth.routes.js";
 const app = express();
 
 // Khai báo Middlewares
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
 app.use(express.json());
 
 // Khai báo Routes

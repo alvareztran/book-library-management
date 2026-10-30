@@ -1,33 +1,32 @@
 import mongoose from "mongoose";
 
-
 const userSchema = new mongoose.Schema(
   {
     fullName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     email: {
       type: String,
       required: true,
       lowercase: true,
       unique: true,
-      trim: true
+      trim: true,
     },
     passwordHash: {
       type: String,
       requied: true,
-      select: false
+      select: false,
     },
     phone: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     address: {
       type: String,
-      trim: true
+      trim: true,
     },
     role: {
       type: String,
@@ -39,7 +38,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: ["active", "inactive", "blocked"],
-      default: "active"
+      default: "active",
     },
   },
   {
