@@ -1,14 +1,21 @@
-import { mongoose, Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const publisherSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
+
+const publisherSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    address: {
+      type: String,
+      trim: true
+    },
   },
-  address: {
-    type: String,
-    required: true,
+  {
+    timestamps: true,
   },
-});
+);
 
 export default mongoose.model("Publisher", publisherSchema);
