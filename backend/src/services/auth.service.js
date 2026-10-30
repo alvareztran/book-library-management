@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import Session from "../models/session.model.js";
 import ApiError from "../utils/ApiError.js";
 import { comparePassword, hashPassword } from "../utils/password.util.js";
 import { hashRefreshToken } from "../utils/refresh-token.util.js";
