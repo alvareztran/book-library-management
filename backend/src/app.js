@@ -4,6 +4,7 @@ import "dotenv/config";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes.js";
 import bookRoutes from "./routes/book.routes.js";
+import borrowRoutes from "./routes/borrow.routes.js";
 import publisherRoutes from "./routes/publisher.routes.js";
 import readerRoutes from "./routes/reader.routes.js";
 import settingRoutes from "./routes/setting.routes.js";
@@ -24,6 +25,7 @@ app.use(cookieParser());
 // Khai báo Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/books", bookRoutes);
+app.use("/api/borrows", borrowRoutes);
 app.use("/api/publishers", publisherRoutes);
 app.use("/api/readers", readerRoutes);
 app.use("/api/settings", settingRoutes);
