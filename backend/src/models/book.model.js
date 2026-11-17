@@ -1,57 +1,47 @@
 import mongoose from "mongoose";
 
-
-const bookSchema = new mongoose.Schema(
+const sachSchema = new mongoose.Schema(
   {
-    title: {
+    TenSach: {
       type: String,
       required: true,
-      trim: true
     },
-    authorIds: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Author",
-      required: true
-    },
-    publisherId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Publisher",
-      required: true
-    },
-    price: {
+    DonGia: {
       type: Number,
       required: true,
       min: 0
     },
-    publicationYear: {
+    SoQuyenDaMuon: {
+      type: Number,
+      default: 0,
+      min: 0
+    },
+    SoQuyen: {
       type: Number,
       required: true,
       min: 0
     },
-    category: {
+    NamXuatBan: {
+      type: Number,
+      required: true
+    },
+    MaNXB: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "NhaXuatBan",
+      required: true,
+    },
+    TenTacGia: {
       type: String,
-      required: true,
-      trim: true
-    },
-    totalCopies: {
-      type: Number,
-      required: true,
-      min: 0
-    },
-    availableCopies: {
-      type: Number,
-      required: true,
-      min: 0
+      required: true
     },
     imageUrl: {
-      type: string,
-      required: true,
-      default: ""
-    }
+      type: String,
+    },
+    categories: {
+      type: String,
+    },
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true },
 );
 
-export default mongoose.model("Book", bookSchema);
+export default mongoose.model("Sach", sachSchema);

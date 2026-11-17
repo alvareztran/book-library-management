@@ -1,62 +1,42 @@
 import mongoose from "mongoose";
 
-const borrowChema = new mongoose.Schema(
+const theoDoiMuonSachSchema = new mongoose.Schema(
   {
-    userId: {
+    MaDocGia: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "DocGia",
       required: true,
     },
-    bookId: {
+    MaSach: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Book",
+      ref: "Sach",
       required: true,
     },
-    status: {
+    NgayMuon: {
+      type: Date,
+      required: true,
+      default: Date.now,
+    },
+    NgayHenTra: {
+      type: Date,
+      default: null,
+    },
+    NgayTra: {
+      type: Date,
+      default: null,
+    },
+    Status: {
       type: String,
-      enum: [
-        "pending",
-        "approved",
-        "rejected",
-        "borrowed",
-        "returned",
-        "overdue",
-      ],
+      enum: ["pending", "borrowing", "returned", "overdue", "rejected"],
       required: true,
+      default: "pending",
     },
-    requestDate: {
-      type: Date,
-      required: true,
-    },
-    approvedDate: {
-      type: Date,
-      required: true,
-    },
-    dueDate: {
-      type: Date,
-      required: true,
-    },
-    returnDate: {
-      type: Date,
-      required: true,
-    },
-    bookCondition: {
-      type: String,
-      default: "",
-    },
-    note: {
-      type: String,
-      required: true,
-    },
-    approvedBy: {
+    ApprovedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+      ref: "NhanVien",
     },
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true },
 );
 
-export default mongoose.model("Borrow", borrowChema);
+export default mongoose.model("TheoDoiMuonSach", theoDoiMuonSachSchema);

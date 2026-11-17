@@ -44,3 +44,61 @@ export const login = async (req, res) => {
     });
   }
 };
+
+export const refresh = async (req, res) => {
+  try {
+    const { accessToken, refreshToken } = await authService.refresh(
+      req.cookies?.refreshToken,
+    );
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: "/api/auth",
+    });
+    res.status(200).json({
+      success: true,
+      message: "Làm mới token thành công.",
+      data: {
+        accessToken,
+      },
+    });
+  } catch (err) {
+    if (err.statusCode === 401) {
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/api/auth",
+      });
+    }
+    return res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.statusCode ? err.message : "Lỗi máy chủ.",
+    });
+  }
+};
+
+export const logout = async (req, res) => {
+  try {
+    await authService.logout(req.cookies?.refreshToken);
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/api/auth",
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Đăng xuất thành công.",
+    });
+  } catch (err) {
+    return res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.statusCode ? err.message : "Lỗi máy chủ.",
+    });
+  }
+};

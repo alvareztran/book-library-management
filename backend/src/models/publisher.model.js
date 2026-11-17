@@ -1,21 +1,16 @@
 import mongoose from "mongoose";
 
-
-const publisherSchema = new mongoose.Schema(
+const nhaXuatBanSchema = new mongoose.Schema(
   {
-    name: {
+    TenNXB: {
       type: String,
       required: true,
-      trim: true
     },
-    address: {
+    DiaChi: {
       type: String,
-      trim: true
     },
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true },
 );
 
-export default mongoose.model("Publisher", publisherSchema);
+export default mongoose.model("NhaXuatBan", nhaXuatBanSchema);
