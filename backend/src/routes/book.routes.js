@@ -6,13 +6,17 @@ import {
   updateBook,
   deleteBook,
 } from "../controllers/book.controller.js";
+import { authenticate } from "../middlewares/authenticate.middleware.js";
+import { authorize } from "../middlewares/authorize.middleware.js";
 
 const router = express.Router();
 
-router.post("/", createBook);
+router.use(authenticate);
+
 router.get("/", getAllBooks);
 router.get("/:id", getBookById);
-router.put("/:id", updateBook);
-router.delete("/:id", deleteBook);
+router.post("/", authorize("admin", "librarian"), createBook);
+router.put("/:id", authorize("admin", "librarian"), updateBook);
+router.delete("/:id", authorize("admin", "librarian"), deleteBook);
 
 export default router;

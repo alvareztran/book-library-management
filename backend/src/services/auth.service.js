@@ -22,16 +22,16 @@ export const register = async (data) => {
     !Password ||
     !SoDienThoai?.trim()
   ) {
-    throw new ApiError(400, "Vui lòng nhập đầy đủ thông tin.");
+    throw new ApiError(400, "Missing required fields.");
   }
 
   const birthDate = new Date(NgaySinh);
   if (Number.isNaN(birthDate.getTime())) {
-    throw new ApiError(400, "Ngày sinh không hợp lệ.");
+    throw new ApiError(400, "Birthday is invalid.");
   }
 
   if (Phai && !["male", "female", "other"].includes(Phai)) {
-    throw new ApiError(400, "Giới tính không hợp lệ.");
+    throw new ApiError(400, "Gender is invalid.");
   }
 
   const normalizedEmail = Email.trim().toLowerCase();
@@ -41,7 +41,7 @@ export const register = async (data) => {
     Staff.findOne({ Email: normalizedEmail }),
   ]);
   if (existingReader || existingStaff) {
-    throw new ApiError(400, "Email đã được sử dụng.");
+    throw new ApiError(400, "Email has already been used.");
   }
 
   const passwordHash = await hashPassword(Password);
@@ -67,7 +67,7 @@ export const register = async (data) => {
 
 export const login = async ({ Email, Password }) => {
   if (!Email?.trim() || !Password) {
-    throw new ApiError(400, "Vui lòng nhập đầy đủ Email và Password.");
+    throw new ApiError(400, "Please enter both Email and Password.");
   }
 
   const normalizedEmail = Email.trim().toLowerCase();
@@ -78,7 +78,7 @@ export const login = async ({ Email, Password }) => {
   ]);
 
   if (!reader && !staff) {
-    throw new ApiError(401, "Email hoặc mật khẩu không chính xác.");
+    throw new ApiError(401, "Email or password is incorrect.");
   }
 
   const user = reader || staff;
@@ -87,11 +87,11 @@ export const login = async ({ Email, Password }) => {
   const matched = await comparePassword(Password, user.Password);
 
   if (!matched) {
-    throw new ApiError(401, "Email hoặc mật khẩu không chính xác.");
+    throw new ApiError(401, "Email or password is incorrect.");
   }
 
   if (user.Status !== "active") {
-    throw new ApiError(403, "Tài khoản hiện không thể đăng nhập.");
+    throw new ApiError(403, "Account is not active.");
   }
 
   const session = new Session({
@@ -123,15 +123,15 @@ export const login = async ({ Email, Password }) => {
 
 export const refresh = async (refreshToken) => {
   if (!refreshToken) {
-    throw new ApiError(401, "Vui lòng đăng nhập lại.");
+    throw new ApiError(401, "Please log in again.");
   }
 
   let decoded;
 
   try {
     decoded = verifyRefreshToken(refreshToken);
-  } catch (err) {
-    throw new ApiError(401, "Token không hợp lệ hoặc đã hết hạn.");
+  } catch {
+    throw new ApiError(401, "Token is invalid or has expired.");
   }
 
   const { sub: userId, sid: sessionId } = decoded;
@@ -143,14 +143,14 @@ export const refresh = async (refreshToken) => {
   }).select("+refreshTokenHash");
 
   if (!session) {
-    throw new ApiError(401, "Phiên đăng nhập không tồn tại hoặc đã hết hạn.");
+    throw new ApiError(401, "Session does not exist or has expired.");
   }
 
   const incomingHash = hashRefreshToken(refreshToken);
 
   if (session.refreshTokenHash !== incomingHash) {
     await Session.deleteOne({ _id: sessionId });
-    throw new ApiError(401, "Refresh token không hợp lệ.");
+    throw new ApiError(401, "Refresh token is invalid.");
   }
 
   const Model =
@@ -160,14 +160,14 @@ export const refresh = async (refreshToken) => {
         ? Staff
         : null;
   if (!Model) {
-    throw new ApiError(401, "Loại tài khoản không hợp lệ.");
+    throw new ApiError(401, "Invalid user type.");
   }
 
   const user = await Model.findById(userId);
 
   if (!user || user.Status !== "active") {
     await Session.deleteOne({ _id: sessionId });
-    throw new ApiError(401, "Tài khoản không hợp lệ.");
+    throw new ApiError(401, "Invalid account.");
   }
 
   const newAccessToken = generateAccessToken(user, session.userType);
@@ -189,7 +189,7 @@ export const refresh = async (refreshToken) => {
   );
 
   if (result.modifiedCount !== 1) {
-    throw new ApiError(401, "Refresh token đã được sử dụng.");
+    throw new ApiError(401, "Refresh token has already been used.");
   }
 
   return {
@@ -200,15 +200,15 @@ export const refresh = async (refreshToken) => {
 
 export const logout = async (refreshToken) => {
   if (!refreshToken) {
-    throw new ApiError(401, "Bạn chưa đăng nhập.");
+    throw new ApiError(401, "You are not logged in.");
   }
 
   let decoded;
 
   try {
     decoded = verifyRefreshToken(refreshToken);
-  } catch (err) {
-    throw new ApiError(401, "Refresh token không hợp lệ.");
+  } catch {
+    throw new ApiError(401, "Refresh token is invalid.");
   }
 
   const session = await Session.findOne({
@@ -217,12 +217,12 @@ export const logout = async (refreshToken) => {
   }).select("+refreshTokenHash");
 
   if (!session) {
-    throw new ApiError(401, "Session không tồn tại.");
+    throw new ApiError(401, "Session does not exist.");
   }
 
   const incommingHash = hashRefreshToken(refreshToken);
   if (session.refreshTokenHash !== incommingHash) {
-    throw new ApiError(401, "Refresh token không hợp lệ.");
+    throw new ApiError(401, "Refresh token is invalid.");
   }
 
   await Session.deleteOne({ _id: decoded.sid });

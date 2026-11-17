@@ -6,8 +6,12 @@ import {
   updateReader,
   deleteReader,
 } from "../controllers/reader.controller.js";
+import { authenticate } from "../middlewares/authenticate.middleware.js";
+import { authorize } from "../middlewares/authorize.middleware.js";
 
 const router = express.Router();
+
+router.use(authenticate, authorize("admin", "librarian"));
 
 router.post("/", createReader);
 router.get("/", getAllReaders);

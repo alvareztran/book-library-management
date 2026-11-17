@@ -8,6 +8,7 @@ import borrowRoutes from "./routes/borrow.routes.js";
 import publisherRoutes from "./routes/publisher.routes.js";
 import readerRoutes from "./routes/reader.routes.js";
 import settingRoutes from "./routes/setting.routes.js";
+import errorHandler from "./middlewares/error.middleware.js";
 import ApiError from "./utils/api-error.js";
 
 const app = express();
@@ -34,5 +35,8 @@ app.use("/api/settings", settingRoutes);
 app.use((req, res, next) => {
   next(new ApiError(404, `Không tìm thấy ${req.originalUrl}`));
 });
+
+// Xử lý lỗi tập trung
+app.use(errorHandler);
 
 export default app;
