@@ -5,10 +5,17 @@ const settingSchema = new mongoose.Schema(
     maxBorrowBooks: {
       type: Number,
       required: true,
+      default: 5,
     },
-    borrowDurationDays: {
+    maxBorrowDurationDays: {
       type: Number,
       required: true,
+      default: 30,
+    },
+    finePerDay: {
+      type: Number,
+      required: true,
+      default: 5000,
     },
   },
   { timestamps: true },

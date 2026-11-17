@@ -16,7 +16,7 @@ const sachSchema = new mongoose.Schema(
       default: 0,
       min: 0
     },
-    SoQuyen: {
+    SoLuong: {
       type: Number,
       required: true,
       min: 0

@@ -9,6 +9,11 @@ const nhaXuatBanSchema = new mongoose.Schema(
     DiaChi: {
       type: String,
     },
+    SoDienThoai: {
+      type: String,
+      required: true,
+      trim: true,
+    },
   },
   { timestamps: true },
 );
